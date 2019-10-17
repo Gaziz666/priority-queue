@@ -74,7 +74,7 @@ class MaxHeap {
 	}
 
 	size() {
-		return this.parentNodes.length;
+		return this.counterNodes;
 	}
 
 	isEmpty() {
@@ -103,11 +103,86 @@ class MaxHeap {
 	}
 
 	shiftNodeUp(node) {
-		
+		if (!node.parent) {
+            this.root = node;
+            return this.root;
+        } else {
+            if (node.priority > node.parent.priority) {
+
+                let parentIndex = this.parentNodes.indexOf(node.parent);
+                let nodeIndex = this.parentNodes.indexOf(node);
+                this.parentNodes[parentIndex] = node;
+                this.parentNodes[nodeIndex] = node.parent;
+                node.swapWithParent();
+                return this.shiftNodeUp(node);
+            }
+        }	
 	}
 
 	shiftNodeDown(node) {
-		
+		if (!node) {
+			return;
+		}
+		if (node.right && node.right.priority > node.priority && node.right.priority > node.left.priority) {
+
+			if (!node.parent) {
+				this.root = node.right;
+			}
+
+			let nodeLeftIndex = this.parentNodes.indexOf(node.right);
+			let nodeIndex = this.parentNodes.indexOf(node);
+
+			if (node.left.left && node.left.right) {
+				this.parentNodes[nodeLeftIndex] = node;
+
+			} else {
+				this.parentNodes[nodeLeftIndex] = node;
+				this.parentNodes[nodeIndex] = node.right;
+			}
+
+			node.right.swapWithParent();
+
+			if (node.left) {
+				node.left.parent = node;
+			}
+
+			if (node.right) {
+				node.right.parent = node;
+			}
+
+			return this.shiftNodeDown(node);
+
+		} 
+		else if (node.left && node.left.priority > node.priority) {
+
+			if (!node.parent) {
+				this.root = node.left;
+			}
+
+			let nodeLeftIndex = this.parentNodes.indexOf(node.left);
+			let nodeIndex = this.parentNodes.indexOf(node);
+
+			if (node.left.left && node.left.right) {
+				this.parentNodes[nodeLeftIndex] = node;
+
+			} else {
+				this.parentNodes[nodeLeftIndex] = node;
+				this.parentNodes[nodeIndex] = node.left;
+			}
+
+			node.left.swapWithParent();
+
+			if (node.right) {
+				node.right.parent = node;
+			}
+
+			if (node.left) {
+				node.left.parent = node;
+			}
+
+			return this.shiftNodeDown(node);
+		}
+    	
 	}
 }
 
